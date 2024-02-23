@@ -1,9 +1,13 @@
-function App() {
+import GlobalStyles from "./styles/GlobalStyles"
 
+function App() {
   return (
-    <div>
-      Hello World
-    </div>
+    <>
+      <GlobalStyles />
+      <div>
+        Hello World
+      </div>
+    </>
   )
 }
 
