@@ -19,5 +19,6 @@ module.exports = {
     ],
     // CUSTOM
     "react/prop-types": "off",
+    "no-unused-vars": "warn",
   },
 };
