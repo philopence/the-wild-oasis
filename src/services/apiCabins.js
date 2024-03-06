@@ -1,7 +1,7 @@
 import supabase, { storageUrl } from "./supabase";
 
 export async function getCabins() {
-  const { data, error } = await supabase.from("cabins").select("*");
+  const { data, error } = await supabase.from("cabins").select();
 
   if (error) {
     console.error(error);
@@ -25,31 +25,39 @@ export async function deleteCabin(cabinId) {
   return data;
 }
 
-export async function insertCabin(newCabin) {
-  const { image: imageFile } = newCabin;
+// TODO REFACTOR
+export async function insertEditCabin(newCabin, id) {
+  const { image } = newCabin;
 
-  const imageName = `${Date.now()}-${imageFile.name}`.replace(/\//g, "");
+  let imagePath = image;
 
-  const { data: storageData, error: storageError } = await supabase.storage
-    .from("cabins-image")
-    .upload(imageName, imageFile);
+  if (image instanceof File) {
+    const imageName = `${Date.now()}-${image.name}`.replace(/\//g, "");
 
-  if (storageError) {
-    console.error(storageError);
-    throw new Error("Cabin image could not be uploaded.");
+    const { data: storageData, error: storageError } = await supabase.storage
+      .from("cabins-image")
+      .upload(imageName, image);
+
+    if (storageError) {
+      console.error(storageError);
+      throw new Error("Cabin image could not be uploaded.");
+    }
+
+    imagePath = `${storageUrl}/${storageData.fullPath}`;
   }
 
-  const imagePath = `${storageUrl}/${storageData.fullPath}`;
+  let query = supabase.from("cabins");
 
-  const { data, error: insertError } = await supabase
-    .from("cabins")
-    .insert([{ ...newCabin, image: imagePath }])
-    .select();
+  query = id
+    ? query.update({ ...newCabin, image: imagePath }).eq("id", id)
+    : query.insert([{ ...newCabin, image: imagePath }]);
+
+  const { data, insertError } = await query.select();
 
   if (insertError) {
     const { error: removeError } = await supabase.storage
       .from("cabins-image")
-      .remove([imageName]);
+      .remove([imagePath.split("/").pop()]);
 
     if (removeError) throw new Error("Cabin image could not be removed.");
 
