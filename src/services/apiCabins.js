@@ -26,7 +26,7 @@ export async function deleteCabin(cabinId) {
 }
 
 // TODO REFACTOR
-export async function insertEditCabin(newCabin, id) {
+export async function createUpdateCabin(newCabin, id) {
   const { image } = newCabin;
 
   let imagePath = image;

@@ -7,9 +7,9 @@ import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 import Textarea from "../../ui/Textarea";
 import { useCreateCabin } from "./useCreateCabin";
-import { useEditCabin } from "./useEditCabin";
+import { useUpdateCabin } from "./useUpdateCabin";
 
-function CreateCabinForm({ cabinToEdit }) {
+function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
   const { id: editId, ...editValues } = cabinToEdit;
 
   const {
@@ -22,19 +22,28 @@ function CreateCabinForm({ cabinToEdit }) {
   });
 
   const { isCreating, createCabin } = useCreateCabin();
-  const { isEditing, editCabin} = useEditCabin()
+  const { isUpdating, updateCabin } = useUpdateCabin();
 
-  const isWorking = isCreating || isEditing;
+  const isWorking = isCreating || isUpdating;
+
+  function onSuccess() {
+    reset();
+    onCloseModal?.();
+  }
 
   function onSubmit(data) {
     const image = typeof data.image === "string" ? data.image : data.image[0];
     const newData = { ...data, image };
-    if (!editId) createCabin(newData, { onSuccess: () => reset() });
-    else editCabin({ newCabinData: newData, id: editId }, {onSuccess: () => reset()});
+
+    if (!editId) createCabin(newData, { onSuccess });
+    else updateCabin({ newCabinData: newData, id: editId }, { onSuccess });
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit)}
+      $type={onCloseModal ? "modal" : "regular"}
+    >
       <FormRow label="Cabin name" errMessage={errors?.name?.message}>
         <Input
           type="text"
@@ -112,7 +121,11 @@ function CreateCabinForm({ cabinToEdit }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button $variation="secondary" type="reset">
+        <Button
+          $variation="secondary"
+          type="reset"
+          onClick={() => onCloseModal?.()}
+        >
           Cancel
         </Button>
         <Button disabled={isWorking}>
