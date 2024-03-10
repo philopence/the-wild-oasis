@@ -24,6 +24,7 @@ const Cabin = styled.div`
   font-weight: 600;
   color: var(--color-grey-600);
   font-family: "Sono";
+  overflow: hidden;
 `;
 
 const Price = styled.div`
@@ -39,7 +40,7 @@ const Discount = styled.div`
 
 function CabinRow({ cabin }) {
   const { isDeleting, deleteCabin } = useDeleteCabin();
-  const { isCreating, createCabin } = useCreateCabin();
+  const { createCabin } = useCreateCabin();
 
   const {
     id: cabinId,
@@ -71,7 +72,7 @@ function CabinRow({ cabin }) {
       {discount ? (
         <Discount>{formatCurrency(discount)}</Discount>
       ) : (
-        <span>&mddash;</span>
+        <span>&mdash;</span>
       )}
       <div>
         <Modal>
