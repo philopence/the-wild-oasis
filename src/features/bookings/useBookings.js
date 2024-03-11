@@ -14,9 +14,18 @@ export function useBookings() {
           method: "eq",
         }
       : null;
+
+  const [field, direction] = (
+    searchParams.get("sort-by") || "startDate-desc"
+  ).split("-");
+  const sortBy = { field: field, direction };
   const { data, isLoading, error } = useQuery({
-    queryKey: ["bookings", filter],
-    queryFn: () => getBookings({ filters: [filter] }),
+    queryKey: ["bookings", filter, sortBy],
+    queryFn: () =>
+      getBookings({
+        filters: [filter],
+        sortBy,
+      }),
   });
 
   return {
