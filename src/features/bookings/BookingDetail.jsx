@@ -9,6 +9,7 @@ import Heading from "../../ui/Heading";
 import Row from "../../ui/Row";
 import Spinner from "../../ui/Spinner";
 import Tag from "../../ui/Tag";
+import { useCheckout } from "../check-in-out/useCheckout";
 import BookingDataBox from "./BookingDataBox";
 import { useBooking } from "./useBooking";
 
@@ -20,6 +21,7 @@ const HeadingGroup = styled.div`
 
 function BookingDetail() {
   const navigate = useNavigate();
+  const { checkOut, isCheckingOut } = useCheckout();
   const { booking = {}, isLoading } = useBooking();
   const { status, id: bookingId } = booking;
 
@@ -49,6 +51,12 @@ function BookingDetail() {
         {status === "unconfirmed" && (
           <Button onClick={() => navigate(`/checkin/${bookingId}`)}>
             Check In
+          </Button>
+        )}
+
+        {status === "checked-in" && (
+          <Button onClick={() => checkOut(bookingId)} disabled={isCheckingOut}>
+            Check out
           </Button>
         )}
 
