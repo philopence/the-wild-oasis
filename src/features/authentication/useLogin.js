@@ -13,7 +13,7 @@ export function useLogin() {
     error,
   } = useMutation({
     mutationFn: loginApi,
-    onSuccess: (user) => {
+    onSuccess: ({ user }) => {
       // Login -> cache User data, avoid ProtectedRoute refetch
       queryClient.setQueryData(["user"], user);
       navigate("/dashboard");
