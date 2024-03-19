@@ -5,23 +5,37 @@ import FileInput from "../../ui/FileInput";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
-
+import { useUpdateUser } from "./useUpdateUser";
 import { useUser } from "./useUser";
 
 function UpdateUserDataForm() {
   // We don't need the loading state, and can immediately use the user data, because we know that it has already been loaded at this point
-  const {
-    user: {
-      email,
-      user_metadata: { fullName: currentFullName },
-    },
-  } = useUser();
+  const { user } = useUser();
 
-  const [fullName, setFullName] = useState(currentFullName);
+  const { email, user_metadata: { fullName: currentFullName } = {} } = user;
+
+  const { isPending, updateUser } = useUpdateUser();
+
+  const [fullName, setFullName] = useState(currentFullName || "");
   const [avatar, setAvatar] = useState(null);
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (!fullName) return;
+
+    updateUser(
+      { fullName, avatar },
+      {
+        onSuccess: () => {
+          setAvatar(null);
+        },
+      },
+    );
+  }
+
+  function handleReset() {
+    setFullName(currentFullName);
+    setAvatar(null);
   }
 
   return (
@@ -35,6 +49,7 @@ function UpdateUserDataForm() {
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           id="fullName"
+          disabled={isPending}
         />
       </FormRow>
       <FormRow label="Avatar image">
@@ -42,13 +57,19 @@ function UpdateUserDataForm() {
           id="avatar"
           accept="image/*"
           onChange={(e) => setAvatar(e.target.files[0])}
+          disabled={isPending}
         />
       </FormRow>
       <FormRow>
-        <Button type="reset" variation="secondary">
+        <Button
+          type="reset"
+          $variation="secondary"
+          onClick={handleReset}
+          disabled={isPending}
+        >
           Cancel
         </Button>
-        <Button>Update account</Button>
+        <Button disabled={isPending}>Update account</Button>
       </FormRow>
     </Form>
   );
