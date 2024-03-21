@@ -39,11 +39,12 @@ function Filter({ filterField, options }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Maybe default "all"
-  const discountValue = searchParams.get("discount");
+  const fieldValue = searchParams.get(filterField);
 
   function handleClick(value) {
     searchParams.set(filterField, value);
 
+    // if exist "page", reset to 1
     if (searchParams.get("page")) {
       searchParams.set("page", 1);
     }
@@ -57,8 +58,8 @@ function Filter({ filterField, options }) {
         <FilterButton
           key={option.value}
           onClick={() => handleClick(option.value)}
-          $active={discountValue === option.value}
-          disabled={discountValue === option.value}
+          $active={fieldValue === option.value}
+          disabled={fieldValue === option.value}
         >
           {option.label}
         </FilterButton>
