@@ -12,6 +12,7 @@ export function useCheckout() {
       }),
     onSuccess: (data) => {
       toast.success(`Booking #${data.id} successfully checked out.`);
+      // FIX refetch
       queryClient.invalidateQueries({ queryKey: ["booking"] });
     },
     onError: () => toast.error("There war an error while checking out."),

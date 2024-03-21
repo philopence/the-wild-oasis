@@ -8,7 +8,7 @@ import {
 import styled from "styled-components";
 
 import DataItem from "../../ui/DataItem";
-import { Flag } from "../../ui/Flag";
+import Flag from "../../ui/Flag";
 import { formatCurrency, formatDistanceFromNow } from "../../utils/helpers";
 
 const StyledBookingDataBox = styled.section`
