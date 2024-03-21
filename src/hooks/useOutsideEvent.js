@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export function useOutsideEvent(event, handler) {
+export function useOutsideEvent(event, handler, option = true) {
   const ref = useRef();
   useEffect(
     function () {
@@ -9,12 +9,12 @@ export function useOutsideEvent(event, handler) {
 
         handler();
       }
-      document.addEventListener(event, handleOutsideEvent, true);
+      document.addEventListener(event, handleOutsideEvent, option);
 
       return () =>
-        document.removeEventListener(event, handleOutsideEvent, true);
+        document.removeEventListener(event, handleOutsideEvent, option);
     },
-    [event, handler],
+    [event, handler, option],
   );
 
   return ref;

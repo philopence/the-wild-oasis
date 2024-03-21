@@ -9,8 +9,8 @@ import { useLogin } from "./useLogin";
 
 function LoginForm() {
   // TEST user
-  const [email, setEmail] = useState("user@example.com");
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const { login, isPending } = useLogin();
 

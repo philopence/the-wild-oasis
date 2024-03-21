@@ -6,6 +6,7 @@ import Button from "../../ui/Button";
 import ButtonGroup from "../../ui/ButtonGroup";
 import ButtonText from "../../ui/ButtonText";
 import ConfirmDelete from "../../ui/ConfirmDelete";
+import Empty from "../../ui/Empty";
 import Heading from "../../ui/Heading";
 import Modal from "../../ui/Modal";
 import Row from "../../ui/Row";
@@ -32,13 +33,15 @@ function BookingDetail() {
 
   const { deleteBooking, isDeleting } = useDeleteBooking();
 
+  if (isLoading) return <Spinner />;
+
+  if (!booking) return <Empty resource="booking" />;
+
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
     "checked-out": "silver",
   };
-
-  if (isLoading) return <Spinner />;
 
   return (
     <>
